@@ -44,54 +44,59 @@ args.forEach(function (v){
     }
     path_keys = Object.keys(openapi_spec['paths']);
     //Fix parameters
-    var parameter_keys = Object.keys(openapi_spec['parameters'])
-    for(var i=0; i< parameter_keys.length;i++) {
-      parameter = parameter_keys[i];
+    if(openapi_spec['parameters']) {
+      var parameter_keys = Object.keys(openapi_spec['parameters'])
+      for (var i = 0; i < parameter_keys.length; i++) {
+        parameter = parameter_keys[i];
 
-      //Add defaults to Enum fields
-      if(!openapi_spec['parameters'][parameter]['example'] || !openapi_spec['parameters'][parameter]['default']){
-        if(openapi_spec['parameters'][parameter]['enum']) {
-          openapi_spec['parameters'][parameter]['example'] = openapi_spec['parameters'][parameter]['enum'][0];
+        //Add defaults to Enum fields
+        if (!openapi_spec['parameters'][parameter]['example'] || !openapi_spec['parameters'][parameter]['default']) {
+          if (openapi_spec['parameters'][parameter]['enum']) {
+            openapi_spec['parameters'][parameter]['example'] = openapi_spec['parameters'][parameter]['enum'][0];
+          }
         }
       }
     }
 
-    //Fix Schemas definitions enum values
-    var definitions_keys = Object.keys(openapi_spec['definitions'])
-    for(var i=0; i< definitions_keys.length;i++) {
-      definition = definitions_keys[i];
-      var properties_keys = Object.keys(openapi_spec['definitions'][definition]['properties']);
-      for(var j =0; j< properties_keys.length; j++) {
-        var property =  properties_keys[j];
-        //Add enum defaults
-        var property_obj = openapi_spec['definitions'][definition]['properties'][property];
-        if(!property_obj['example'] || !property_obj['default']){
-          if(property_obj['enum']) {
-            property_obj['example'] = property_obj['enum'][0];
-          }
-          if(property_obj['items'] && property_obj['items']['enum']) {
-            property_obj['example'] = property_obj['items']['enum'][0];
+    if(openapi_spec['definitions']) {
+      //Fix Schemas definitions enum values
+      var definitions_keys = Object.keys(openapi_spec['definitions'])
+      for (var i = 0; i < definitions_keys.length; i++) {
+        definition = definitions_keys[i];
+        var properties_keys = Object.keys(openapi_spec['definitions'][definition]['properties']);
+        for (var j = 0; j < properties_keys.length; j++) {
+          var property = properties_keys[j];
+          //Add enum defaults
+          var property_obj = openapi_spec['definitions'][definition]['properties'][property];
+          if (!property_obj['example'] || !property_obj['default']) {
+            if (property_obj['enum']) {
+              property_obj['example'] = property_obj['enum'][0];
+            }
+            if (property_obj['items'] && property_obj['items']['enum']) {
+              property_obj['example'] = property_obj['items']['enum'][0];
+            }
           }
         }
       }
-    }
-    //Fix schema definitions with $ref directly on properties
-    //Have to reloop because we want to ensure enum values are fixed correctly
-    for(var i=0; i< definitions_keys.length;i++) {
-      definition = definitions_keys[i];
-      var properties_keys = Object.keys(openapi_spec['definitions'][definition]['properties']);
-      for(var j =0; j< properties_keys.length; j++) {
-        var property =  properties_keys[j];
-        //Add enum defaults
-        var property_obj = openapi_spec['definitions'][definition]['properties'][property];
-        if(property_obj['$ref']){
-          var description = null;
-          if(property_obj['description']){
-            description = property_obj['description'];
-          }
-          openapi_spec['definitions'][definition]['properties'][property] = flatten_model_schema(openapi_spec, property_obj['$ref'], []);
-          if(description != null) {
-            openapi_spec['definitions'][definition]['properties'][property]['description'] = description;
+
+      //Fix schema definitions with $ref directly on properties
+      //Have to reloop because we want to ensure enum values are fixed correctly
+      for (var i = 0; i < definitions_keys.length; i++) {
+        definition = definitions_keys[i];
+        var properties_keys = Object.keys(openapi_spec['definitions'][definition]['properties']);
+        for (var j = 0; j < properties_keys.length; j++) {
+          var property = properties_keys[j];
+          //Add enum defaults
+          var property_obj = openapi_spec['definitions'][definition]['properties'][property];
+          if (property_obj['$ref']) {
+            var description = null;
+            if (property_obj['description']) {
+              description = property_obj['description'];
+            }
+            openapi_spec['definitions'][definition]['properties'][property] = flatten_model_schema(openapi_spec, property_obj['$ref'], []);
+            if (description != null) {
+              openapi_spec['definitions'][definition]['properties'][property]['description'] = description;
+            }
           }
         }
       }
