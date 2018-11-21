@@ -363,46 +363,46 @@ Apigee.APIModel.Editor = function() {
   };
 };
 Apigee.APIModel.Schema = function() {
-    var schema; // A Code mirror editor for the request payload.
-    /**
-     * This method initializes the request payload sample code mirror editor.
-     */
-    this.initRequestPayloadSchema = function() {
-        if (jQuery('[data-role="request-payload-schema"]').length) { // Check if request payload example element is available.
-            jQuery('[data-role="request-payload-schema"]').children("textarea").show();
-            bodyPayloadElementValue = jQuery.trim(jQuery('[data-role="request-payload-schema"]').find("textarea").val());
-            jQuery('.request_payload textarea.payload_text_schema').val(bodyPayloadElementValue);
-            bodyPayloadElement = jQuery('.request_payload textarea.payload_text_schema');
-            if (bodyPayloadElement) { // Set xml/json mode based on the request payload value.
-                var modeName = (bodyPayloadElement.data("format") == "application/xml") ? "xml" : "javascript";
-                schema = CodeMirror.fromTextArea( jQuery('.request_payload textarea.payload_text_schema').get(0), {
-                    mode: modeName,
-                    lineNumbers: true
-                });
-                if (schema.lineCount() <= 2) {
-                    schema.setSize('100%',schema.lineCount()*18);
-                } else {
-                    schema.setSize('100%',schema.lineCount()*15);
-                }
-
-            }
-            jQuery('[data-role="request-payload-schema"]').hide();
+  var schema; // A Code mirror editor for the request payload.
+  /**
+   * This method initializes the request payload sample code mirror editor.
+   */
+  this.initRequestPayloadSchema = function() {
+    if (jQuery('[data-role="request-payload-schema"]').length) { // Check if request payload example element is available.
+      jQuery('[data-role="request-payload-schema"]').children("textarea").show();
+      bodyPayloadElementValue = jQuery.trim(jQuery('[data-role="request-payload-schema"]').find("textarea").val());
+      jQuery('.request_payload textarea.payload_text_schema').val(bodyPayloadElementValue);
+      bodyPayloadElement = jQuery('.request_payload textarea.payload_text_schema');
+      if (bodyPayloadElement) { // Set xml/json mode based on the request payload value.
+        var modeName = (bodyPayloadElement.data("format") == "application/xml") ? "xml" : "javascript";
+        schema = CodeMirror.fromTextArea( jQuery('.request_payload textarea.payload_text_schema').get(0), {
+          mode: modeName,
+          lineNumbers: true
+        });
+        if (schema.lineCount() <= 2) {
+          schema.setSize('100%',schema.lineCount()*18);
+        } else {
+          schema.setSize('100%',schema.lineCount()*15);
         }
-    };
-    /*
-     * Get the request payload sample editor value.
-     * @return {String} Value of a request payload editor.
-     */
-    this.getRequestPayLoad = function() {
-        return schema.getValue();
-    };
-    /*
-     * Set request payload sample editor value.
-     * @param {string} payload A request payload value.
-     */
-    this.setRequestPayLoad = function(payload) {
-        schema.setValue(payload);
-    };
+
+      }
+      jQuery('[data-role="request-payload-schema"]').hide();
+    }
+  };
+  /*
+   * Get the request payload sample editor value.
+   * @return {String} Value of a request payload editor.
+   */
+  this.getRequestPayLoad = function() {
+    return schema.getValue();
+  };
+  /*
+   * Set request payload sample editor value.
+   * @param {string} payload A request payload value.
+   */
+  this.setRequestPayLoad = function(payload) {
+    schema.setValue(payload);
+  };
 };
 /**
  * This class handles operation page related functions.
@@ -461,10 +461,10 @@ Apigee.APIModel.Methods = function() {
       jQuery(this).siblings("span").attr("data-role",jQuery(this).text());
       //OnFocus out if empty reset with default
       jQuery(this).focusout(function(){
-          var $_this = jQuery(this);
-          if(jQuery.trim($_this.text()) == '') {
-              $_this.text($_this.siblings("span").attr("data-role"));
-          }});
+        var $_this = jQuery(this);
+        if(jQuery.trim($_this.text()) == '') {
+          $_this.text($_this.siblings("span").attr("data-role"));
+        }});
     });
 
     // Create a sibling node to each template param and add original value to the siblings.
@@ -990,9 +990,9 @@ Apigee.APIModel.Methods = function() {
         if (jQuery.trim(queryParamValue).length >= 1) {
           var separator = (isFistParam) ? "" : "&";
           try{
-              queryParamValue = decodeURIComponent(queryParamValue);
+            queryParamValue = decodeURIComponent(queryParamValue);
           }catch(e){
-              //Ignore any decoding error
+            //Ignore any decoding error
           }
           queryParamString += separator + queryParamName + "=" + encodeURIComponent(queryParamValue);
           isFistParam = false;
@@ -1214,28 +1214,28 @@ Apigee.APIModel.Methods = function() {
       for (var i=0,l=headersList.length; i<l; i++) {
         results.push('--header "' + headersList[i].name + ': ' + headersList[i].value + '"');
         if( headersList[i].name == 'Content-Type') {
-            content_type_processed = true;
+          content_type_processed = true;
         }
       }
     }
     if(!content_type_processed) {
       // If the Content-Type is set, put that in cURL display.
       if (contentTypeValue) {
-          results.push('--header "Content-Type: ' + contentTypeValue + '"');
+        results.push('--header "Content-Type: ' + contentTypeValue + '"');
       }
     }
 
     if (bodyPayload && bodyPayload.replace) {
       results.push('-d "' + bodyPayload.replace(/"/g, '\\"') + '"');
     } else {
-        jQuery("#formAttachment :input").each(function(index, obj){
-            var $obj = jQuery(obj);
-            var value = $obj.val();
-            if(jQuery(obj).attr('type') == 'file') {
-                value = "@" + $obj[0].files[0].name;
-            }
-            results.push('-F "' + $obj.attr('name') + "=" + value + '"');
-        });
+      jQuery("#formAttachment :input").each(function(index, obj){
+        var $obj = jQuery(obj);
+        var value = $obj.val();
+        if(jQuery(obj).attr('type') == 'file') {
+          value = "@" + $obj[0].files[0].name;
+        }
+        results.push('-F "' + $obj.attr('name') + "=" + value + '"');
+      });
     }
 
     Apigee.curl = 'curl ' + (results.join(' ')) + ' "' + targetUrl + '"';
@@ -2277,7 +2277,7 @@ Apigee.APIModel.SwaggerModelProperty = function(name, obj) {
       this.refDataType = obj.items.$ref;
     }
     if(this.refDataType){
-        this.refDataType = this.refDataType.replace("#/definitions/", "");
+      this.refDataType = this.refDataType.replace("#/definitions/", "");
     }
   }
   this.dataTypeWithRef = this.refDataType != null ? (this.dataType + '[' + this.refDataType + ']') : this.dataType;
@@ -2323,7 +2323,7 @@ Apigee.APIModel.SwaggerModelProperty = function(name, obj) {
     } else if (value === "double" || value === "number") {
       result = this.default || 0.0;
     } else if (value === "string") {
-      result = this.default || "";
+      result =  this.default || "";
     } else if (Apigee.APIModel.originalExpandedSchema[value]) {
       var swaggerModel = new Apigee.APIModel.SwaggerModel( value, Apigee.APIModel.originalExpandedSchema[value]);
       result = swaggerModel.createJSONSample(modelsToIgnore);
